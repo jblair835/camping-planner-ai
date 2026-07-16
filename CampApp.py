@@ -75,7 +75,6 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* Section headers */
     h2 {
         color: #C97B3A !important;
         font-family: serif !important;
@@ -131,28 +130,28 @@ planner_agent = Agent(
     role="Camping Planner",
     goal="Create detailed camping trip plans",
     backstory="You are an expert outdoor guide with decades of wilderness experience.",
-    llm=groq_llm
+    llm="groq/llama3-8b-8192"
 )
 
 packing_agent = Agent(
     role="Packing Expert",
     goal="Create packing lists based on season and experience",
     backstory="You specialize in wilderness gear and survival essentials.",
-    llm=groq_llm
+    llm="groq/llama3-8b-8192"
 )
 
 weather_agent = Agent(
     role="Weather Forecaster",
     goal="Provide weather forecasts for camping trips",
     backstory="You analyze weather patterns for outdoor safety.",
-    llm=groq_llm
+    llm="groq/llama3-8b-8192"
 )
 
 gear_agent = Agent(
     role="Gear Specialist",
     goal="Recommend camping gear",
     backstory="You know every piece of gear needed for any terrain.",
-    llm=groq_llm
+    llm="groq/llama3-8b-8192"
 )
 
 # ---------- Tasks / Runner functions ----------
