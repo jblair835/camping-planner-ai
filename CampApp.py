@@ -179,7 +179,7 @@ def run_gear():
     return crew.run()
 
 # ============================================================
-# MAIN CONTENT — TABS
+# MAIN CONTENT — 4 TABS
 # ============================================================
 
 st.markdown("## 🌲 Your Camping Dashboard")
