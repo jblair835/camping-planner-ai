@@ -1,10 +1,10 @@
 # ============================================================
+import streamlit as st  # This MUST be line 1
 from crewai import Agent, Task, Crew
 from langchain_groq import ChatGroq
 
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# 2. Define the engine using standard LangChain wrapper compatibility 
 custom_llm = ChatGroq(
     model="llama-3.1-8b-instant",
     groq_api_key=groq_api_key,
