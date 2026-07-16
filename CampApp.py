@@ -34,9 +34,12 @@ st.divider()
 #   CLOUD LLM (GROQ)
 # ============================
 
-llm = LLM(
+from crewai.llms import Groq
+
+groq_api_key = st.secrets["GROQ_API_KEY"]
+
+llm = Groq(
     model="llama3-8b-8192",
-    provider="groq",
     api_key=groq_api_key
 )
 
