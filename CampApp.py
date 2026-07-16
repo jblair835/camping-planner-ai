@@ -12,8 +12,8 @@ import os
 #   STREAMLIT UI
 # ============================
 
-st.set_page_config(page_title="Camping Planner AI", layout="wide")
-st.title("🏕️ Camping Planner AI")
+st.set_page_config(page_title="My Camping Planner", layout="wide")
+st.title("🏕️ My Camping Planner")
 st.write("Plan KOA, State Park, and National Park camping trips with AI-powered itineraries, meals, groceries, gear lists, safety tips, and more.")
 
 # ---------------------------
