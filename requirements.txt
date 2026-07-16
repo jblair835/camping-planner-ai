@@ -1,2 +1,4 @@
-# requirements.txt
-# Add Python package dependencies here, one per line.
+streamlit
+crewai
+requests
+groq
