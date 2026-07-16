@@ -3,43 +3,50 @@ import streamlit as st
 from crewai import Agent, Task, Crew
 
 # ============================================================
-# RUSTIC / OUTDOORSY UI MAKEOVER + FIXED TRANSPARENCY LAYERS
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(page_title="Camping Planner AI", layout="wide")
 
+# ============================================================
+# SEQUOIA BACKGROUND + RUSTIC THEME
+# ============================================================
+
 st.markdown("""
 <style>
-    /* Target the root containers directly to guarantee visibility */
+
+    /* Full-page faded background image */
     .main, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
         background-color: #F4EFE6 !important;
-        background-image: url('https://unsplash.com') !important;
+        background-image: url('/attachments/gTbAQpmh7niZLBDeCMkQy.png') !important;
         background-size: cover !important;
         background-attachment: fixed !important;
         background-position: center !important;
+        opacity: 0.25 !important;
     }
 
-    /* Make child containers transparent so the background photo peeks through */
+    /* Transparent overlay so background shows through */
     [data-testid="stHeader"], [data-testid="stAppViewBlockContainer"] {
         background: transparent !important;
     }
 
     .pine-top {
-        background-image: url('https://unsplash.com');
+        background-image: url('/attachments/gTbAQpmh7niZLBDeCMkQy.png');
         background-size: cover;
         background-position: top;
         height: 140px;
-        opacity: 0.9;
+        opacity: 0.35;
         border-bottom: 4px solid #C97B3A;
     }
 
     .rustic-header {
-        background-image: url('https://unsplash.com');
+        background-image: url('/attachments/gTbAQpmh7niZLBDeCMkQy.png');
         background-size: cover;
         background-position: center;
         padding: 4rem 1rem;
         border-bottom: 6px solid #C97B3A;
         box-shadow: 0px 10px 25px rgba(0,0,0,0.4);
+        opacity: 0.45;
     }
 
     .rustic-header::after {
@@ -66,7 +73,7 @@ st.markdown("""
     }
 
     .rustic-card {
-        background-color: #E3DCCF;
+        background-color: rgba(227, 220, 207, 0.85);
         padding: 1.5rem;
         border-radius: 12px;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
@@ -78,8 +85,13 @@ st.markdown("""
         color: #C97B3A !important;
         font-family: serif !important;
     }
+
 </style>
 """, unsafe_allow_html=True)
+
+# ============================================================
+# HEADER
+# ============================================================
 
 st.markdown('<div class="pine-top"></div>', unsafe_allow_html=True)
 
@@ -89,37 +101,24 @@ st.markdown("""
         🏕️ Camping Planner AI
     </h1>
     <p style="text-align:center; color:#F4EFE6; font-size:1.2rem; font-family:serif;">
-        Plan your perfect outdoor adventure under the stars
+        Plan your perfect outdoor adventure under the towering Sequoias
     </p>
 </div>
 """, unsafe_allow_html=True)
 
 # ============================================================
-# SIDEBAR INPUTS
+# CREWAI CONFIG
 # ============================================================
 
-st.sidebar.header("🌿 Trip Settings")
-
-season = st.sidebar.selectbox("Season or month", ["Spring", "March", "April", "May", "Summer", "June", "July", "August", "Fall", "September", "October", "November", "Winter", "December", "January", "February"])
-experience = st.sidebar.selectbox("Experience level", ["Beginner", "Intermediate", "Advanced"])
-location = st.sidebar.text_input("Preferred region (optional)")
-
-submit = st.sidebar.button("Generate Trip Plan")
-
-# ============================================================
-# CREWAI — GLOBAL ENVIRONMENT DIRECT PASS (STABLE ON STREAMLIT)
-# ============================================================
-
-# Assigning secrets directly to OS environments forces compatibility mapping in CrewAI
 os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
-# ---------- Agents ----------
+# Agents (CrewAI 1.15.2 requires llm string names)
 planner_agent = Agent(
     role="Camping Planner",
     goal="Create detailed camping trip plans",
     backstory="You are an expert outdoor guide with decades of wilderness experience.",
-    llm="groq/llama-3.1-8b-instant"  # Clean direct engine mapping string
+    llm="groq/llama-3.1-8b-instant"
 )
 
 packing_agent = Agent(
@@ -144,10 +143,10 @@ gear_agent = Agent(
 )
 
 # ============================================================
-# TASKS
+# TASK FUNCTIONS
 # ============================================================
 
-def run_planner():
+def run_planner(season, experience, location):
     task = Task(
         description=f"Create a camping plan for a {experience} camper in {season}. Region: {location}.",
         expected_output="A detailed daily itinerary including campsite recommendations and safety notes.",
@@ -156,41 +155,44 @@ def run_planner():
     crew = Crew(tasks=[task], agents=[planner_agent])
     return crew.kickoff().raw
 
-def run_packing_list():
+def run_packing_list(season, experience):
     task = Task(
         description=f"Create a packing list for a {experience} camper in {season}.",
-        expected_output="A categorized checklist of clothing, survival gear, food, and specific essentials.",
+        expected_output="A categorized checklist of clothing, survival gear, food, and essentials.",
         agent=packing_agent
     )
     crew = Crew(tasks=[task], agents=[packing_agent])
     return crew.kickoff().raw
 
-def run_weather():
+def run_weather(season, location):
     task = Task(
         description=f"Provide a weather forecast for camping in {season} in {location}.",
-        expected_output="A summary of average temperatures, rain likelihood, and any climate warnings.",
+        expected_output="A summary of temperatures, rain likelihood, and climate warnings.",
         agent=weather_agent
     )
     crew = Crew(tasks=[task], agents=[weather_agent])
     return crew.kickoff().raw
 
-def run_gear():
+def run_gear(season, experience):
     task = Task(
         description=f"Recommend camping gear for a {experience} camper in {season}.",
-        expected_output="A bulleted list of essential gear brands, types, and tools matched to the camper's experience.",
+        expected_output="A bulleted list of essential gear brands, types, and tools.",
         agent=gear_agent
     )
     crew = Crew(tasks=[task], agents=[gear_agent])
     return crew.kickoff().raw
 
 # ============================================================
-# MAIN CONTENT — TABS WITH PERSISTENT SESSION STATE
+# SESSION STATE
 # ============================================================
 
-# Initialize session state variables so switching tabs doesn't wipe existing generations
 for key in ["plan", "packing", "weather", "gear"]:
     if f"result_{key}" not in st.session_state:
         st.session_state[f"result_{key}"] = None
+
+# ============================================================
+# MAIN TABS
+# ============================================================
 
 st.markdown("## 🌲 Your Camping Dashboard")
 
@@ -198,60 +200,86 @@ tab_plan, tab_packing, tab_weather, tab_gear = st.tabs(
     ["🧭 Trip Plan", "🎒 Packing List", "🌦️ Weather", "🪵 Gear"]
 )
 
-# --- Tab 1: Trip Plan ---
+# ============================================================
+# TAB 1 — TRIP PLAN (inputs moved here)
+# ============================================================
+
 with tab_plan:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
-    if submit:
-        with st.spinner("Generating your camping plan..."):
-            st.session_state.result_plan = run_planner()
+
+    st.subheader("🌿 Trip Settings")
+
+    season = st.selectbox("Season or month", [
+        "Spring", "March", "April", "May",
+        "Summer", "June", "July", "August",
+        "Fall", "September", "October", "November",
+        "Winter", "December", "January", "February"
+    ])
+
+    experience = st.selectbox("Experience level", ["Beginner", "Intermediate", "Advanced"])
+    location = st.text_input("Preferred region (optional)")
+
+    if st.button("Generate Trip Plan"):
+        with st.spinner("Creating your custom camping plan..."):
+            st.session_state.result_plan = run_planner(season, experience, location)
         st.success("Camping plan generated!")
-    
-    if st.session_state.result_plan:
-        st.write(st.session_state.result_plan)
-    else:
-        st.write("Fill out the trip settings on the left and click **Generate Trip Plan**.")
+
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Tab 2: Packing List ---
+    if st.session_state.result_plan:
+        st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
+        st.write(st.session_state.result_plan)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# ============================================================
+# TAB 2 — PACKING LIST
+# ============================================================
+
 with tab_packing:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
+
     if st.button("Generate Packing List"):
-        with st.spinner("Generating packing list..."):
-            st.session_state.result_packing = run_packing_list()
+        with st.spinner("Building your packing list..."):
+            st.session_state.result_packing = run_packing_list(season, experience)
         st.success("Packing list generated!")
-        
+
     if st.session_state.result_packing:
         st.write(st.session_state.result_packing)
-    else:
-        st.write("Click **Generate Packing List** to get a gear checklist.")
+
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Tab 3: Weather ---
+# ============================================================
+# TAB 3 — WEATHER
+# ============================================================
+
 with tab_weather:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
+
     if st.button("Get Weather Forecast"):
         with st.spinner("Fetching weather forecast..."):
-            st.session_state.result_weather = run_weather()
+            st.session_state.result_weather = run_weather(season, location)
         st.success("Weather forecast generated!")
-        
+
     if st.session_state.result_weather:
         st.write(st.session_state.result_weather)
-    else:
-        st.write("Click **Get Weather Forecast** to see conditions for your trip.")
+
     st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Tab 4: Gear ---
+# ============================================================
+# TAB 4 — GEAR
+# ============================================================
+
 with tab_gear:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
+
     if st.button("Generate Gear Recommendations"):
-        with st.spinner("Generating gear recommendations..."):
-            st.session_state.result_gear = run_gear()
+        with st.spinner("Gathering gear recommendations..."):
+            st.session_state.result_gear = run_gear(season, experience)
         st.success("Gear recommendations generated!")
-        
+
     if st.session_state.result_gear:
         st.write(st.session_state.result_gear)
-    else:
-        st.write("Click **Generate Gear Recommendations** for tailored gear suggestions.")
+
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================================
@@ -260,6 +288,6 @@ with tab_gear:
 
 st.markdown("""
 <div style="text-align:center; padding:2rem; color:#3B2F2F; font-family:serif;">
-    <em>Made with ❤️ under the tall pines</em>
+    <em>Made with ❤️ under the towering Sequoias</em>
 </div>
 """, unsafe_allow_html=True)
