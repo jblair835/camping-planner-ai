@@ -96,7 +96,7 @@ st.markdown("""
 
 st.sidebar.header("🌿 Trip Settings")
 
-season = st.sidebar.selectbox("Season or month", ["August", "September", "October"])
+season = st.sidebar.selectbox("Season or month", ["Spring", "March", "April", "May", "Summer", "June", "July", "August", "Fall", "September", "October", "November", "Winter", "December", "January", "February", "March"])
 experience = st.sidebar.selectbox("Experience level", ["Beginner", "Intermediate", "Advanced"])
 location = st.sidebar.text_input("Preferred region (optional)")
 
