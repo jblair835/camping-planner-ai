@@ -1,3 +1,4 @@
+python-dateutil
 streamlit
 crewai>=0.1.17
 requests
