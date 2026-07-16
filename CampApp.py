@@ -1,16 +1,7 @@
-# ============================================================
+import os
 import streamlit as st
 from crewai import Agent, Task, Crew
-from langchain_groq import ChatGroq
 from litellm import completion
-
-groq_api_key = st.secrets["GROQ_API_KEY"]
-
-custom_llm = ChatGroq(
-    model="llama-3.1-8b-instant",
-    groq_api_key=groq_api_key,
-    temperature=0.5
-)
 
 # ============================================================
 # RUSTIC / OUTDOORSY UI MAKEOVER
@@ -20,17 +11,16 @@ st.set_page_config(page_title="Camping Planner AI", layout="wide")
 
 st.markdown("""
 <style>
-
     .main {
         background-color: #F4EFE6;
-        background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
+        background-image: url('https://unsplash.com');
         background-size: cover;
         background-attachment: fixed;
         background-position: center;
     }
 
     .pine-top {
-        background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');
+        background-image: url('https://unsplash.com');
         background-size: cover;
         background-position: top;
         height: 140px;
@@ -39,7 +29,7 @@ st.markdown("""
     }
 
     .rustic-header {
-        background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');
+        background-image: url('https://unsplash.com');
         background-size: cover;
         background-position: center;
         padding: 4rem 1rem;
@@ -83,7 +73,6 @@ st.markdown("""
         color: #C97B3A !important;
         font-family: serif !important;
     }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -113,49 +102,44 @@ location = st.sidebar.text_input("Preferred region (optional)")
 submit = st.sidebar.button("Generate Trip Plan")
 
 # ============================================================
-# CREWAI — GROQ COMPATIBILITY LLM CONFIG
+# CREWAI — GROQ NATIVE ENVIRONMENT CONFIG
 # ============================================================
 
-groq_api_key = st.secrets["GROQ_API_KEY"]
-
-# Define the engine using standard LangChain wrapper compatibility 
-custom_llm = ChatGroq(
-    model="llama-3.1-8b-instant",
-    groq_api_key=groq_api_key,
-    temperature=0.5
-)
+# Native environment hooks resolve downstream parameter issues and satisfy Pydantic validations
+os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+os.environ["OTEL_SDK_DISABLED"] = "true"
 
 # ---------- Agents ----------
 planner_agent = Agent(
     role="Camping Planner",
     goal="Create detailed camping trip plans",
     backstory="You are an expert outdoor guide with decades of wilderness experience.",
-    llm=custom_llm
+    llm="groq/llama-3.1-8b-instant"
 )
 
 packing_agent = Agent(
     role="Packing Expert",
     goal="Create packing lists based on season and experience",
     backstory="You specialize in wilderness gear and survival essentials.",
-    llm=custom_llm
+    llm="groq/llama-3.1-8b-instant"
 )
 
 weather_agent = Agent(
     role="Weather Forecaster",
     goal="Provide weather forecasts for camping trips",
     backstory="You analyze weather patterns for outdoor safety.",
-    llm=custom_llm
+    llm="groq/llama-3.1-8b-instant"
 )
 
 gear_agent = Agent(
     role="Gear Specialist",
     goal="Recommend camping gear",
     backstory="You know every piece of gear needed for any terrain.",
-    llm=custom_llm
+    llm="groq/llama-3.1-8b-instant"
 )
 
 # ============================================================
-# TASKS (With Expected Output and Kickoff fixes)
+# TASKS
 # ============================================================
 
 def run_planner():
@@ -198,7 +182,7 @@ def run_gear():
 # MAIN CONTENT — TABS WITH PERSISTENT SESSION STATE
 # ============================================================
 
-# Initialize session state variables if they don't exist yet
+# Initialize session state variables so switching tabs doesn't wipe existing generations
 for key in ["plan", "packing", "weather", "gear"]:
     if f"result_{key}" not in st.session_state:
         st.session_state[f"result_{key}"] = None
@@ -271,6 +255,6 @@ with tab_gear:
 
 st.markdown("""
 <div style="text-align:center; padding:2rem; color:#3B2F2F; font-family:serif;">
-    <em>Made with ❤️ resting under the tall pines</em>
+    <em>Made with ❤️ under the tall pines</em>
 </div>
 """, unsafe_allow_html=True)
