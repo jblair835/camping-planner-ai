@@ -34,12 +34,12 @@ st.divider()
 #   CLOUD LLM (GROQ)
 # ============================
 
-from crewai.llms import Groq
-
-llm = Groq(
+llm = LLM(
     model="llama3-8b-8192",
-    api_key=st.secrets["GROQ_API_KEY"]
+    provider="groq",
+    api_key=groq_api_key
 )
+
 
 # ============================
 #   CAMPING PLANNER TOOLS
