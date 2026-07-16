@@ -1,7 +1,6 @@
 import os
 import streamlit as st
-from crewai import Agent, Task, Crew
-from litellm import completion
+from crewai import Agent, Task, Crew, LLM  # Explicitly imported LLM class
 
 # ============================================================
 # RUSTIC / OUTDOORSY UI MAKEOVER
@@ -102,40 +101,47 @@ location = st.sidebar.text_input("Preferred region (optional)")
 submit = st.sidebar.button("Generate Trip Plan")
 
 # ============================================================
-# CREWAI — GROQ NATIVE ENVIRONMENT CONFIG
+# CREWAI — GROQ NATIVE LLM OBJECT CONFIG
 # ============================================================
 
-# Native environment hooks resolve downstream parameter issues and satisfy Pydantic validations
-os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+# Fetch API key and assign globally to clear any potential downstream credential block
+groq_api_key = st.secrets["GROQ_API_KEY"]
+os.environ["GROQ_API_KEY"] = groq_api_key
 os.environ["OTEL_SDK_DISABLED"] = "true"
+
+# Define the native CrewAI LLM config block
+groq_llm = LLM(
+    model="groq/llama-3.1-8b-instant",
+    api_key=groq_api_key
+)
 
 # ---------- Agents ----------
 planner_agent = Agent(
     role="Camping Planner",
     goal="Create detailed camping trip plans",
     backstory="You are an expert outdoor guide with decades of wilderness experience.",
-    llm="groq/llama-3.1-8b-instant"
+    llm=groq_llm
 )
 
 packing_agent = Agent(
     role="Packing Expert",
     goal="Create packing lists based on season and experience",
     backstory="You specialize in wilderness gear and survival essentials.",
-    llm="groq/llama-3.1-8b-instant"
+    llm=groq_llm
 )
 
 weather_agent = Agent(
     role="Weather Forecaster",
     goal="Provide weather forecasts for camping trips",
     backstory="You analyze weather patterns for outdoor safety.",
-    llm="groq/llama-3.1-8b-instant"
+    llm=groq_llm
 )
 
 gear_agent = Agent(
     role="Gear Specialist",
     goal="Recommend camping gear",
     backstory="You know every piece of gear needed for any terrain.",
-    llm="groq/llama-3.1-8b-instant"
+    llm=groq_llm
 )
 
 # ============================================================
