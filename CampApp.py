@@ -194,7 +194,7 @@ def run_gear():
 st.markdown("## 🌲 Your Camping Dashboard")
 
 tab_plan, tab_packing, tab_weather, tab_gear = st.tabs(
-    ["🧭 Trip Plan", "🎒 Packing List", "🌦️ Weather", "🪵 Gear"]
+    ["🧭 Plan Trip", "🎒 Packing List", "🌦️ Weather", "🪵 Gear"]
 )
 
 # ---------- Trip Plan Tab ----------
