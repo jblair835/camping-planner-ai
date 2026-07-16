@@ -1,5 +1,5 @@
 import streamlit as st
-from crewai import Agent, Task, Crew
+from crewai import Agent, Task, Crew, LLM  # Added LLM here
 from litellm import completion
 
 # ============================================================
@@ -96,25 +96,26 @@ st.markdown("""
 
 st.sidebar.header("🌿 Trip Settings")
 
-season = st.sidebar.selectbox("Season or month", ["Spring", "March", "April", "May", "Summer", "June", "July", "August", "Fall", "September", "October", "November", "Winter", "December", "January", "February", "March"])
+season = st.sidebar.selectbox("Season or month", ["Spring", "March", "April", "May", "Summer", "June", "July", "August", "Fall", "September", "October", "November", "Winter", "December", "January", "February"])
 experience = st.sidebar.selectbox("Experience level", ["Beginner", "Intermediate", "Advanced"])
 location = st.sidebar.text_input("Preferred region (optional)")
 
 submit = st.sidebar.button("Generate Trip Plan")
 
 # ============================================================
-# CREWAI 1.15.x — GROQ VIA LITELLM
+# CREWAI 1.15.x — GROQ NATIVE LLM CONFIG
 # ============================================================
 
-from crewai import LLM
+# Fetch your API key from Streamlit secrets
+groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# Define the LLM configuration natively for CrewAI
+# Correctly initialize the LLM configuration object
 custom_llm = LLM(
     model="groq/llama3-8b-8192",
-    api_key=st.secrets["GROQ_API_KEY"]
+    api_key=groq_api_key
 )
 
-# Pass the custom_llm object to your agents
+# ---------- Agents ----------
 planner_agent = Agent(
     role="Camping Planner",
     goal="Create detailed camping trip plans",
@@ -143,8 +144,10 @@ gear_agent = Agent(
     llm=custom_llm
 )
 
-# ---------- Tasks ----------
-# ---------- Tasks ----------
+# ============================================================
+# TASKS (With Expected Output and Kickoff fixes)
+# ============================================================
+
 def run_planner():
     task = Task(
         description=f"Create a camping plan for a {experience} camper in {season}. Region: {location}.",
@@ -152,7 +155,7 @@ def run_planner():
         agent=planner_agent
     )
     crew = Crew(tasks=[task], agents=[planner_agent])
-    return crew.kickoff().raw  # Changed run() to kickoff().raw
+    return crew.kickoff().raw
 
 def run_packing_list():
     task = Task(
@@ -161,7 +164,7 @@ def run_packing_list():
         agent=packing_agent
     )
     crew = Crew(tasks=[task], agents=[packing_agent])
-    return crew.kickoff().raw  # Changed run() to kickoff().raw
+    return crew.kickoff().raw
 
 def run_weather():
     task = Task(
@@ -170,7 +173,7 @@ def run_weather():
         agent=weather_agent
     )
     crew = Crew(tasks=[task], agents=[weather_agent])
-    return crew.kickoff().raw  # Changed run() to kickoff().raw
+    return crew.kickoff().raw
 
 def run_gear():
     task = Task(
@@ -179,12 +182,13 @@ def run_gear():
         agent=gear_agent
     )
     crew = Crew(tasks=[task], agents=[gear_agent])
-    return crew.kickoff().raw  # Changed run() to kickoff().raw
+    return crew.kickoff().raw
 
 # ============================================================
-# MAIN CONTENT — TABS
+# MAIN CONTENT — TABS WITH PERSISTENT SESSION STATE
 # ============================================================
-# Initialize session state variables if they don't exist
+
+# Initialize session state variables if they don't exist yet
 for key in ["plan", "packing", "weather", "gear"]:
     if f"result_{key}" not in st.session_state:
         st.session_state[f"result_{key}"] = None
@@ -250,13 +254,13 @@ with tab_gear:
     else:
         st.write("Click **Generate Gear Recommendations** for tailored gear suggestions.")
     st.markdown('</div>', unsafe_allow_html=True)
+
 # ============================================================
 # FOOTER
 # ============================================================
 
 st.markdown("""
 <div style="text-align:center; padding:2rem; color:#3B2F2F; font-family:serif;">
-    <em>Made with ❤️ under the tall pines</em>
+    <em>Made with ❤️ resting under the tall pines</em>
 </div>
 """, unsafe_allow_html=True)
-
