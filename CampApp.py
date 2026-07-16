@@ -1,3 +1,6 @@
+#=============================
+#   MY CAMPING APP
+#=============================
 import streamlit as st
 from crewai import Agent, Task, Crew, Process, LLM
 from crewai.tools import tool
@@ -31,12 +34,11 @@ st.divider()
 #   CLOUD LLM (GROQ)
 # ============================
 
-groq_api_key = st.secrets["GROQ_API_KEY"]
+from crewai.llms import Groq
 
-llm = LLM(
+llm = Groq(
     model="llama3-8b-8192",
-    provider="groq",
-    api_key=groq_api_key
+    api_key=st.secrets["GROQ_API_KEY"]
 )
 
 # ============================
