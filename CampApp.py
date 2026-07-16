@@ -1,7 +1,8 @@
 # ============================================================
-import streamlit as st  # This MUST be line 1
+import streamlit as st
 from crewai import Agent, Task, Crew
 from langchain_groq import ChatGroq
+from litellm import completion
 
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
@@ -117,11 +118,11 @@ submit = st.sidebar.button("Generate Trip Plan")
 
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# Force clean API routing using Groq's official OpenAI-compatible endpoint
-custom_llm = LLM(
-    model="llama-3.1-8b-instant",             # Clean model name without prefixes
-    base_url="https://groq.com", # Explicitly forces routing to Groq
-    api_key=groq_api_key
+# Define the engine using standard LangChain wrapper compatibility 
+custom_llm = ChatGroq(
+    model="llama-3.1-8b-instant",
+    groq_api_key=groq_api_key,
+    temperature=0.5
 )
 
 # ---------- Agents ----------
