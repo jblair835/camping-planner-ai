@@ -106,49 +106,49 @@ submit = st.sidebar.button("Generate Trip Plan")
 # CREWAI 1.15.x — GROQ VIA LITELLM
 # ============================================================
 
-groq_api_key = st.secrets["GROQ_API_KEY"]
+from crewai import LLM
 
-def groq_llm(prompt: str) -> str:
-    response = completion(
-        model="groq/llama3-8b-8192",
-        api_key=groq_api_key,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return response["choices"][0]["message"]["content"]
+# Define the LLM configuration natively for CrewAI
+custom_llm = LLM(
+    model="groq/llama3-8b-8192",
+    api_key=st.secrets["GROQ_API_KEY"]
+)
 
-# ---------- Agents ----------
+# Pass the custom_llm object to your agents
 planner_agent = Agent(
     role="Camping Planner",
     goal="Create detailed camping trip plans",
     backstory="You are an expert outdoor guide with decades of wilderness experience.",
-    llm="groq/llama3-8b-8192"
+    llm=custom_llm
 )
 
 packing_agent = Agent(
     role="Packing Expert",
     goal="Create packing lists based on season and experience",
     backstory="You specialize in wilderness gear and survival essentials.",
-    llm="groq/llama3-8b-8192"
+    llm=custom_llm
 )
 
 weather_agent = Agent(
     role="Weather Forecaster",
     goal="Provide weather forecasts for camping trips",
     backstory="You analyze weather patterns for outdoor safety.",
-    llm="groq/llama3-8b-8192"
+    llm=custom_llm
 )
 
 gear_agent = Agent(
     role="Gear Specialist",
     goal="Recommend camping gear",
     backstory="You know every piece of gear needed for any terrain.",
-    llm="groq/llama3-8b-8192"
+    llm=custom_llm
 )
 
+# ---------- Tasks ----------
 # ---------- Tasks ----------
 def run_planner():
     task = Task(
         description=f"Create a camping plan for a {experience} camper in {season}. Region: {location}.",
+        expected_output="A detailed daily itinerary including campsite recommendations and safety notes.",
         agent=planner_agent
     )
     crew = Crew(tasks=[task], agents=[planner_agent])
@@ -157,6 +157,7 @@ def run_planner():
 def run_packing_list():
     task = Task(
         description=f"Create a packing list for a {experience} camper in {season}.",
+        expected_output="A categorized checklist of clothing, survival gear, food, and specific essentials.",
         agent=packing_agent
     )
     crew = Crew(tasks=[task], agents=[packing_agent])
@@ -165,6 +166,7 @@ def run_packing_list():
 def run_weather():
     task = Task(
         description=f"Provide a weather forecast for camping in {season} in {location}.",
+        expected_output="A summary of average temperatures, rain likelihood, and any climate warnings.",
         agent=weather_agent
     )
     crew = Crew(tasks=[task], agents=[weather_agent])
@@ -173,6 +175,7 @@ def run_weather():
 def run_gear():
     task = Task(
         description=f"Recommend camping gear for a {experience} camper in {season}.",
+        expected_output="A bulleted list of essential gear brands, types, and tools matched to the camper's experience.",
         agent=gear_agent
     )
     crew = Crew(tasks=[task], agents=[gear_agent])
@@ -181,6 +184,10 @@ def run_gear():
 # ============================================================
 # MAIN CONTENT — TABS
 # ============================================================
+# Initialize session state variables if they don't exist
+for key in ["plan", "packing", "weather", "gear"]:
+    if f"result_{key}" not in st.session_state:
+        st.session_state[f"result_{key}"] = None
 
 st.markdown("## 🌲 Your Camping Dashboard")
 
@@ -188,50 +195,61 @@ tab_plan, tab_packing, tab_weather, tab_gear = st.tabs(
     ["🧭 Trip Plan", "🎒 Packing List", "🌦️ Weather", "🪵 Gear"]
 )
 
+# --- Tab 1: Trip Plan ---
 with tab_plan:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if submit:
         with st.spinner("Generating your camping plan..."):
-            result = run_planner()
+            st.session_state.result_plan = run_planner()
         st.success("Camping plan generated!")
-        st.write(result)
+    
+    if st.session_state.result_plan:
+        st.write(st.session_state.result_plan)
     else:
         st.write("Fill out the trip settings on the left and click **Generate Trip Plan**.")
     st.markdown('</div>', unsafe_allow_html=True)
 
+# --- Tab 2: Packing List ---
 with tab_packing:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if st.button("Generate Packing List"):
         with st.spinner("Generating packing list..."):
-            packing_list = run_packing_list()
+            st.session_state.result_packing = run_packing_list()
         st.success("Packing list generated!")
-        st.write(packing_list)
+        
+    if st.session_state.result_packing:
+        st.write(st.session_state.result_packing)
     else:
         st.write("Click **Generate Packing List** to get a gear checklist.")
     st.markdown('</div>', unsafe_allow_html=True)
 
+# --- Tab 3: Weather ---
 with tab_weather:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if st.button("Get Weather Forecast"):
         with st.spinner("Fetching weather forecast..."):
-            weather = run_weather()
+            st.session_state.result_weather = run_weather()
         st.success("Weather forecast generated!")
-        st.write(weather)
+        
+    if st.session_state.result_weather:
+        st.write(st.session_state.result_weather)
     else:
         st.write("Click **Get Weather Forecast** to see conditions for your trip.")
     st.markdown('</div>', unsafe_allow_html=True)
 
+# --- Tab 4: Gear ---
 with tab_gear:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if st.button("Generate Gear Recommendations"):
         with st.spinner("Generating gear recommendations..."):
-            gear = run_gear()
+            st.session_state.result_gear = run_gear()
         st.success("Gear recommendations generated!")
-        st.write(gear)
+        
+    if st.session_state.result_gear:
+        st.write(st.session_state.result_gear)
     else:
         st.write("Click **Generate Gear Recommendations** for tailored gear suggestions.")
     st.markdown('</div>', unsafe_allow_html=True)
-
 # ============================================================
 # FOOTER
 # ============================================================
