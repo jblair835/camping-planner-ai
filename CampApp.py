@@ -1,6 +1,15 @@
-import streamlit as st
-from crewai import Agent, Task, Crew, LLM  # Added LLM here
-from litellm import completion
+# ============================================================
+from crewai import Agent, Task, Crew
+from langchain_groq import ChatGroq
+
+groq_api_key = st.secrets["GROQ_API_KEY"]
+
+# 2. Define the engine using standard LangChain wrapper compatibility 
+custom_llm = ChatGroq(
+    model="llama-3.1-8b-instant",
+    groq_api_key=groq_api_key,
+    temperature=0.5
+)
 
 # ============================================================
 # RUSTIC / OUTDOORSY UI MAKEOVER
