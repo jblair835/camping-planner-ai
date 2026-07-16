@@ -11,7 +11,6 @@ st.set_page_config(page_title="Camping Planner AI", layout="wide")
 st.markdown("""
 <style>
 
-    /* Global parchment background */
     .main {
         background-color: #F4EFE6;
         background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
@@ -20,7 +19,6 @@ st.markdown("""
         background-position: center;
     }
 
-    /* Pine needles + pinecone fade at top */
     .pine-top {
         background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba');
         background-size: cover;
@@ -30,7 +28,6 @@ st.markdown("""
         border-bottom: 4px solid #C97B3A;
     }
 
-    /* Starlit sky through trees header */
     .rustic-header {
         background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee');
         background-size: cover;
@@ -40,7 +37,6 @@ st.markdown("""
         box-shadow: 0px 10px 25px rgba(0,0,0,0.4);
     }
 
-    /* Firepit glow under header */
     .rustic-header::after {
         content: "";
         display: block;
@@ -49,7 +45,6 @@ st.markdown("""
         margin-top: -40px;
     }
 
-    /* Rustic buttons */
     .stButton>button {
         background-color: #C97B3A;
         color: #F4EFE6;
@@ -65,7 +60,6 @@ st.markdown("""
         color: white;
     }
 
-    /* Rustic card style */
     .rustic-card {
         background-color: #E3DCCF;
         padding: 1.5rem;
@@ -83,10 +77,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- Pine needle fade ----------
 st.markdown('<div class="pine-top"></div>', unsafe_allow_html=True)
 
-# ---------- Starlit sky header ----------
 st.markdown("""
 <div class="rustic-header">
     <h1 style="text-align:center; color:#F4EFE6; font-family:serif; font-size:3rem;">
@@ -99,12 +91,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================================
-# SIDEBAR — USER INPUTS
+# SIDEBAR INPUTS
 # ============================================================
 
 st.sidebar.header("🌿 Trip Settings")
 
-season = st.sidebar.selectbox("Season or month", ["August", "September", "October"])
+season = st.sidebar.selectbox("Season or month", ["Winter", "December", "January", "February", "Spring", "March", "April", "May", "June", "July", "August", "Fall", "September", "October", "November"])
 experience = st.sidebar.selectbox("Experience level", ["Beginner", "Intermediate", "Advanced"])
 location = st.sidebar.text_input("Preferred region (optional)")
 
@@ -117,7 +109,6 @@ submit = st.sidebar.button("Generate Trip Plan")
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
 def groq_llm(prompt: str) -> str:
-    """LiteLLM wrapper for Groq."""
     response = completion(
         model="groq/llama3-8b-8192",
         api_key=groq_api_key,
@@ -154,7 +145,7 @@ gear_agent = Agent(
     llm="groq/llama3-8b-8192"
 )
 
-# ---------- Tasks / Runner functions ----------
+# ---------- Tasks ----------
 def run_planner():
     task = Task(
         description=f"Create a camping plan for a {experience} camper in {season}. Region: {location}.",
@@ -194,10 +185,9 @@ def run_gear():
 st.markdown("## 🌲 Your Camping Dashboard")
 
 tab_plan, tab_packing, tab_weather, tab_gear = st.tabs(
-    ["🧭 Plan Trip", "🎒 Packing List", "🌦️ Weather", "🪵 Gear"]
+    ["🧭 Trip Plan", "🎒 Packing List", "🌦️ Weather", "🪵 Gear"]
 )
 
-# ---------- Trip Plan Tab ----------
 with tab_plan:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if submit:
@@ -209,7 +199,6 @@ with tab_plan:
         st.write("Fill out the trip settings on the left and click **Generate Trip Plan**.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------- Packing List Tab ----------
 with tab_packing:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if st.button("Generate Packing List"):
@@ -221,7 +210,6 @@ with tab_packing:
         st.write("Click **Generate Packing List** to get a gear checklist.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------- Weather Tab ----------
 with tab_weather:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if st.button("Get Weather Forecast"):
@@ -233,7 +221,6 @@ with tab_weather:
         st.write("Click **Get Weather Forecast** to see conditions for your trip.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------- Gear Tab ----------
 with tab_gear:
     st.markdown('<div class="rustic-card">', unsafe_allow_html=True)
     if st.button("Generate Gear Recommendations"):
