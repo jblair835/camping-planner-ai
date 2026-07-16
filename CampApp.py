@@ -1,21 +1,27 @@
 import os
 import streamlit as st
-from crewai import Agent, Task, Crew, LLM  # Explicitly imported LLM class
+from crewai import Agent, Task, Crew
 
 # ============================================================
-# RUSTIC / OUTDOORSY UI MAKEOVER
+# RUSTIC / OUTDOORSY UI MAKEOVER + FIXED TRANSPARENCY LAYERS
 # ============================================================
 
 st.set_page_config(page_title="Camping Planner AI", layout="wide")
 
 st.markdown("""
 <style>
-    .main {
-        background-color: #F4EFE6;
-        background-image: url('https://unsplash.com');
-        background-size: cover;
-        background-attachment: fixed;
-        background-position: center;
+    /* Target the root containers directly to guarantee visibility */
+    .main, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+        background-color: #F4EFE6 !important;
+        background-image: url('https://unsplash.com') !important;
+        background-size: cover !important;
+        background-attachment: fixed !important;
+        background-position: center !important;
+    }
+
+    /* Make child containers transparent so the background photo peeks through */
+    [data-testid="stHeader"], [data-testid="stAppViewBlockContainer"] {
+        background: transparent !important;
     }
 
     .pine-top {
@@ -101,47 +107,40 @@ location = st.sidebar.text_input("Preferred region (optional)")
 submit = st.sidebar.button("Generate Trip Plan")
 
 # ============================================================
-# CREWAI — GROQ NATIVE LLM OBJECT CONFIG
+# CREWAI — GLOBAL ENVIRONMENT DIRECT PASS (STABLE ON STREAMLIT)
 # ============================================================
 
-# Fetch API key and assign globally to clear any potential downstream credential block
-groq_api_key = st.secrets["GROQ_API_KEY"]
-os.environ["GROQ_API_KEY"] = groq_api_key
+# Assigning secrets directly to OS environments forces compatibility mapping in CrewAI
+os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 os.environ["OTEL_SDK_DISABLED"] = "true"
-
-# Define the native CrewAI LLM config block
-groq_llm = LLM(
-    model="groq/llama-3.1-8b-instant",
-    api_key=groq_api_key
-)
 
 # ---------- Agents ----------
 planner_agent = Agent(
     role="Camping Planner",
     goal="Create detailed camping trip plans",
     backstory="You are an expert outdoor guide with decades of wilderness experience.",
-    llm=groq_llm
+    llm="groq/llama-3.1-8b-instant"  # Clean direct engine mapping string
 )
 
 packing_agent = Agent(
     role="Packing Expert",
     goal="Create packing lists based on season and experience",
     backstory="You specialize in wilderness gear and survival essentials.",
-    llm=groq_llm
+    llm="groq/llama-3.1-8b-instant"
 )
 
 weather_agent = Agent(
     role="Weather Forecaster",
     goal="Provide weather forecasts for camping trips",
     backstory="You analyze weather patterns for outdoor safety.",
-    llm=groq_llm
+    llm="groq/llama-3.1-8b-instant"
 )
 
 gear_agent = Agent(
     role="Gear Specialist",
     goal="Recommend camping gear",
     backstory="You know every piece of gear needed for any terrain.",
-    llm=groq_llm
+    llm="groq/llama-3.1-8b-instant"
 )
 
 # ============================================================
