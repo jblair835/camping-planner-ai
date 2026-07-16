@@ -108,11 +108,10 @@ submit = st.sidebar.button("Generate Trip Plan")
 
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# Format explicitly for Groq api routing compatibility
+# Native formatting configuration mapping directly to groq provider routing
 custom_llm = LLM(
-    model="groq/llama-3.1-8b-instant",  # Updated to a highly stable, current production Groq ID
-    api_key=groq_api_key,
-    base_url="https://groq.com"  # Force litellm to route cleanly to Groq endpoints
+    model="groq/llama-3.1-8b-instant",  # Standard, valid litellm deployment identifier string
+    api_key=groq_api_key
 )
 
 # ---------- Agents ----------
