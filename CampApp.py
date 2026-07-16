@@ -152,7 +152,7 @@ def run_planner():
         agent=planner_agent
     )
     crew = Crew(tasks=[task], agents=[planner_agent])
-    return crew.run()
+    return crew.kickoff().raw  # Changed run() to kickoff().raw
 
 def run_packing_list():
     task = Task(
@@ -161,7 +161,7 @@ def run_packing_list():
         agent=packing_agent
     )
     crew = Crew(tasks=[task], agents=[packing_agent])
-    return crew.run()
+    return crew.kickoff().raw  # Changed run() to kickoff().raw
 
 def run_weather():
     task = Task(
@@ -170,7 +170,7 @@ def run_weather():
         agent=weather_agent
     )
     crew = Crew(tasks=[task], agents=[weather_agent])
-    return crew.run()
+    return crew.kickoff().raw  # Changed run() to kickoff().raw
 
 def run_gear():
     task = Task(
@@ -179,7 +179,7 @@ def run_gear():
         agent=gear_agent
     )
     crew = Crew(tasks=[task], agents=[gear_agent])
-    return crew.run()
+    return crew.kickoff().raw  # Changed run() to kickoff().raw
 
 # ============================================================
 # MAIN CONTENT — TABS
