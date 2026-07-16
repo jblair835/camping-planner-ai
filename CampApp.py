@@ -103,14 +103,15 @@ location = st.sidebar.text_input("Preferred region (optional)")
 submit = st.sidebar.button("Generate Trip Plan")
 
 # ============================================================
-# CREWAI 1.15.x — GROQ NATIVE LLM CONFIG
+# CREWAI — GROQ COMPATIBILITY LLM CONFIG
 # ============================================================
 
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# Native formatting configuration mapping directly to groq provider routing
+# Force clean API routing using Groq's official OpenAI-compatible endpoint
 custom_llm = LLM(
-    model="groq/llama-3.1-8b-instant",  # Standard, valid litellm deployment identifier string
+    model="llama-3.1-8b-instant",             # Clean model name without prefixes
+    base_url="https://groq.com", # Explicitly forces routing to Groq
     api_key=groq_api_key
 )
 
