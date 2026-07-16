@@ -15,14 +15,26 @@ st.set_page_config(page_title="Camping Planner AI", layout="wide")
 st.markdown("""
 <style>
 
-    /* Full-page faded background image */
+    /* Base app container */
     .main, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
         background-color: #F4EFE6 !important;
-        background-image: url('/attachments/gTbAQpmh7niZLBDeCMkQy.png') !important;
-        background-size: cover !important;
-        background-attachment: fixed !important;
-        background-position: center !important;
-        opacity: 0.25 !important;
+        position: relative;
+    }
+
+    /* Faded background overlay */
+    .main::before, [data-testid="stAppViewContainer"]::before, [data-testid="stApp"]::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/attachments/gTbAQpmh7niZLBDeCMkQy.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        opacity: 0.25;   /* fade level */
+        z-index: -1;     /* keeps it behind everything */
     }
 
     /* Transparent overlay so background shows through */
@@ -288,6 +300,6 @@ with tab_gear:
 
 st.markdown("""
 <div style="text-align:center; padding:2rem; color:#3B2F2F; font-family:serif;">
-    <em>Made with ❤️ under the towering Sequoias</em>
+    <em>Made with ❤️ resting under the towering Sequoias</em>
 </div>
 """, unsafe_allow_html=True)
