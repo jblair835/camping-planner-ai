@@ -106,13 +106,13 @@ submit = st.sidebar.button("Generate Trip Plan")
 # CREWAI 1.15.x — GROQ NATIVE LLM CONFIG
 # ============================================================
 
-# Fetch your API key from Streamlit secrets
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# Correctly initialize the LLM configuration object
+# Format explicitly for Groq api routing compatibility
 custom_llm = LLM(
-    model="groq/llama3-8b-8192",
-    api_key=groq_api_key
+    model="groq/llama-3.1-8b-instant",  # Updated to a highly stable, current production Groq ID
+    api_key=groq_api_key,
+    base_url="https://groq.com"  # Force litellm to route cleanly to Groq endpoints
 )
 
 # ---------- Agents ----------
