@@ -96,7 +96,7 @@ st.markdown("""
 
 st.sidebar.header("🌿 Trip Settings")
 
-season = st.sidebar.selectbox("Season or month", ["Winter", "December", "January", "February", "Spring", "March", "April", "May", "June", "July", "August", "Fall", "September", "October", "November"])
+season = st.sidebar.selectbox("Season or month", ["August", "September", "October"])
 experience = st.sidebar.selectbox("Experience level", ["Beginner", "Intermediate", "Advanced"])
 location = st.sidebar.text_input("Preferred region (optional)")
 
@@ -179,7 +179,7 @@ def run_gear():
     return crew.run()
 
 # ============================================================
-# MAIN CONTENT — 4 TABS
+# MAIN CONTENT — TABS
 # ============================================================
 
 st.markdown("## 🌲 Your Camping Dashboard")
@@ -241,3 +241,4 @@ st.markdown("""
     <em>Made with ❤️ under the tall pines</em>
 </div>
 """, unsafe_allow_html=True)
+
