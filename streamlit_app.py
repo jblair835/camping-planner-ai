@@ -24,7 +24,7 @@ if st.button("Generate Plan"):
         "experience_level": experience_level
     }
 
-    response = requests.post("http://127.0.0.1:8000/plan", json=payload)
+    response = requests.post("https://friendly-succotash-wrq7r5pp7rpw35w5p-8000.app.github.dev/", json=payload)
 
     if response.status_code == 200:
         st.success("Camping Plan Generated!")
