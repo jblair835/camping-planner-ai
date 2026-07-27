@@ -29,7 +29,7 @@ experience_level = st.sidebar.selectbox("🎒 Experience Level", ["beginner", "i
 # ---------------------------------------------------------
 # IMPORTANT: Replace this with YOUR forwarded Codespaces URL
 # ---------------------------------------------------------
-API_URL = "https://friendly-succotash-wrq7r5pp7rpw35w5p-8000.app.github.dev/plan"
+API_URL = "https://friendly-succotash-wrq7r5pp7rpw35w5p-8000.app.github.dev/"
 
 # ---------------------------------------------------------
 # Generate Button
