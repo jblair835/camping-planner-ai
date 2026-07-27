@@ -1,40 +1,19 @@
 import streamlit as st
 import requests
 
-# ---------------------------------------------------------
-# Streamlit Page Setup
-# ---------------------------------------------------------
-st.set_page_config(
-    page_title="Camping Planner AI",
-    page_icon="🏕️",
-    layout="centered",
-)
+st.title("Camping Planner AI")
 
-st.title("🏕️ Camping Planner AI")
-st.write("Plan your perfect outdoor adventure with AI-powered trip guidance.")
+location = st.text_input("Location")
+origin = st.text_input("Origin")
+num_people = st.number_input("Number of People", min_value=1, step=1)
+num_days = st.number_input("Number of Days", min_value=1, step=1)
+camp_style = st.selectbox("Camping Style", ["tent", "rv", "cabin", "backpacking"])
+season = st.text_input("Season or Month")
+experience_level = st.selectbox("Experience Level", ["beginner", "intermediate", "advanced"])
 
-# ---------------------------------------------------------
-# Sidebar Inputs
-# ---------------------------------------------------------
-st.sidebar.header("Trip Settings")
+API_URL = "https://friendly-succotash-wrq7r5pp7rpw35w5p-8000.app.github.dev/plan"
 
-location = st.sidebar.text_input("📍 Location")
-origin = st.sidebar.text_input("🚗 Origin")
-num_people = st.sidebar.number_input("👥 Number of People", min_value=1, step=1)
-num_days = st.sidebar.number_input("📅 Number of Days", min_value=1, step=1)
-camp_style = st.sidebar.selectbox("⛺ Camping Style", ["tent", "rv", "cabin", "backpacking"])
-season = st.sidebar.text_input("🌤️ Season or Month")
-experience_level = st.sidebar.selectbox("🎒 Experience Level", ["beginner", "intermediate", "advanced"])
-
-# ---------------------------------------------------------
-# IMPORTANT: Replace this with YOUR forwarded Codespaces URL
-# ---------------------------------------------------------
-API_URL = "https://friendly-succotash-wrq7r5pp7rpw35w5p-8000.app.github.dev/"
-
-# ---------------------------------------------------------
-# Generate Button
-# ---------------------------------------------------------
-if st.button("Generate Camping Plan"):
+if st.button("Generate Plan"):
     payload = {
         "location": location,
         "origin": origin,
@@ -45,21 +24,16 @@ if st.button("Generate Camping Plan"):
         "experience_level": experience_level
     }
 
-    with st.spinner("Generating your camping plan..."):
-        try:
-            response = requests.post(API_URL, json=payload)
-        except Exception as e:
-            st.error("Could not reach the FastAPI server.")
-            st.write(e)
-            st.stop()
+    try:
+        response = requests.post(API_URL, json=payload)
+    except Exception as e:
+        st.error("Could not reach FastAPI.")
+        st.write(e)
+        st.stop()
 
-    # ---------------------------------------------------------
-    # Response Handling
-    # ---------------------------------------------------------
     if response.status_code == 200:
-        st.success("Your camping plan is ready!")
+        st.success("Camping Plan Generated!")
         st.json(response.json())
     else:
-        st.error("Something went wrong.")
-        st.write("Server response:")
+        st.error("Error from server:")
         st.write(response.text)

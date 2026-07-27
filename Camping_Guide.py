@@ -2,6 +2,8 @@
 #   CAMPING PLANNING CREW AI
 # ============================
 
+import os
+
 from crewai import Agent, Task, Crew, Process, LLM
 
 # Parks
@@ -44,7 +46,11 @@ from utils.report import generate_pdf_report
 
 import json
 
-llm = LLM(model="llama3.2", provider="ollama")
+llm = LLM(
+    model="gpt-4o-mini",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    provider="openai"
+)
 
 
 def run_guide(
