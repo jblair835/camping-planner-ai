@@ -1,5 +1,4 @@
 import random
-
 from meals.simple import SIMPLE_MEALS
 from meals.gourmet import GOURMET_MEALS
 from meals.backpacking import BACKPACKING_MEALS

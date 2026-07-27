@@ -1,11 +1,11 @@
-def food_plan(num_days: int, num_people: int) -> str:
-    """Suggest a simple camping food plan."""
+def generate_food_plan(num_days: int, num_people: int, style: str) -> str:
+    """Generate a simple food plan summary."""
+
     return (
-        f"Food plan for {num_people} people over {num_days} days:\n"
-        "- Easy breakfasts (oatmeal, eggs, fruit)\n"
-        "- Simple lunches (sandwiches, wraps, trail mix)\n"
-        "- Camp dinners (grilled items, one-pot meals, foil packets)\n"
-        "- Snacks (nuts, bars, jerky)\n"
-        "- Plenty of water and electrolyte drinks\n"
-        "Adjust quantities based on appetite and activity level."
+        f"Food Plan:\n"
+        f"- {num_days} days of meals\n"
+        f"- {num_people} people\n"
+        f"- Style: {style}\n"
+        f"- Includes breakfast, lunch, dinner, and snacks\n"
+        f"- Uses selected meals and grocery list"
     )

@@ -1,6 +1,9 @@
-def state_park_info(location_hint: str) -> str:
-    """Provide generic state park camping info."""
+def get_state_park_info(park_name: str) -> str:
+    """Stub: return state park info."""
     return (
-        f"State park camping near {location_hint}: "
-        "Typically offers designated campsites, restrooms, picnic areas, and marked trails."
+        f"State Park Info: {park_name}\n"
+        "- Family-friendly facilities\n"
+        "- Affordable campsites\n"
+        "- Lakes or rivers nearby\n"
+        "- Easy to moderate trails"
     )

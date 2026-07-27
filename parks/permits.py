@@ -1,6 +1,8 @@
-def permit_requirements(location_hint: str) -> str:
-    """Describe typical permit requirements."""
+def get_permit_requirements(location: str) -> str:
+    """Stub: return permit requirements."""
     return (
-        f"Permits near {location_hint}: "
-        "Check park or campground websites for reservation requirements, fire permits, and backcountry permits."
+        f"Permit requirements for {location}:\n"
+        "- Backcountry permit may be required\n"
+        "- Fire restrictions may apply\n"
+        "- Check local regulations before arrival"
     )

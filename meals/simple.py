@@ -1,5 +1,20 @@
 SIMPLE_MEALS = {
-    "breakfast": ["Eggs & Sausage", "Cereal & Milk", "Oatmeal"],
-    "lunch": ["Sandwiches", "Ramen Bowl", "Burritos", "Wraps"],
-    "dinner": ["Spaghetti", "Carne Asada Beans & Rice", "Chicken Salad Tostadas", "Hamburgers & Hot Dogs"],
+    "breakfast": [
+        "Oatmeal",
+        "Eggs & tortillas",
+        "Fruit & granola",
+        "Pancakes",
+    ],
+    "lunch": [
+        "Sandwiches",
+        "Wraps",
+        "Trail mix + jerky",
+        "Veggie hummus sandwiches",
+    ],
+    "dinner": [
+        "Foil packet veggies + sausage",
+        "Grilled chicken + rice",
+        "Chili + cornbread",
+        "Dutch oven stew",
+    ],
 }

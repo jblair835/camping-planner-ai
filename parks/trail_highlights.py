@@ -1,6 +1,9 @@
-def trail_highlights(location_hint: str) -> str:
-    """Describe typical trail options."""
+def get_trail_highlights(location: str) -> str:
+    """Stub: return trail highlights."""
     return (
-        f"Trail highlights near {location_hint}: "
-        "Short nature walks, moderate day hikes, and possibly longer backcountry routes."
+        f"Trail highlights near {location}:\n"
+        "- Scenic ridge trail\n"
+        "- Waterfall loop\n"
+        "- Meadow walk\n"
+        "- Wildlife viewing areas"
     )

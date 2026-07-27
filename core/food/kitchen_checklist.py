@@ -21,7 +21,7 @@ def get_kitchen_checklist(style: str) -> str:
         "Paper towels",
     ]
 
-    extras: list[str] = []
+    extras = []
     style_key = style.lower()
 
     if style_key in ["rv", "cabin", "luxury"]:

@@ -1,7 +1,10 @@
-def wildlife_info(location_hint: str) -> str:
-    """Provide general wildlife info."""
+def get_wildlife_info(location: str) -> str:
+    """Describe local wildlife and safety considerations."""
     return (
-        f"Wildlife near {location_hint}: "
-        "Expect common animals like deer, birds, small mammals, and possibly bears or coyotes. "
-        "Store food properly and never feed wildlife."
+        f"Wildlife near {location}:\n"
+        "- Deer and small mammals\n"
+        "- Songbirds and hawks\n"
+        "- Occasional black bear sightings\n"
+        "- Practice safe food storage\n"
+        "- Keep a respectful distance from all wildlife"
     )

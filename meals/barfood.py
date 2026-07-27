@@ -1,6 +1,6 @@
 BARFOOD_MEALS = {
     "breakfast": [
-        "Breakfast sliders (sausage, egg, cheese)",
+        "Breakfast sliders",
         "Loaded breakfast burritos",
         "Cheesy hashbrown skillet",
     ],

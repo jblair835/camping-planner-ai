@@ -1,5 +1,17 @@
 GOURMET_MEALS = {
-    "breakfast": ["Pancakes, Eggs & Potatoes", "Breakfast burritos", "French toast"],
-    "lunch": ["Hot Dogs with Mac&Cheese", "Chicken & Cheese Flautas", "Charcuterie board", "Veggie hummus sandwiches"],
-    "dinner": ["Dutch oven stew", "Campfire fajitas", "BBQ ribs + potatoes"],
+    "breakfast": [
+        "French toast",
+        "Breakfast burritos",
+        "Fruit & granola parfait",
+    ],
+    "lunch": [
+        "Chicken salad wraps",
+        "Charcuterie board",
+        "Gourmet sandwiches",
+    ],
+    "dinner": [
+        "Campfire fajitas",
+        "BBQ ribs + potatoes",
+        "Herbed chicken & rice",
+    ],
 }
